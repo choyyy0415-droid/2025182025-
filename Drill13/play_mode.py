@@ -1,11 +1,12 @@
 from pico2d import *
-from sdl2 import SDLK_p
+from sdl2 import SDLK_p, SDLK_i
 import game_framework
 import game_world
 from boy import Boy
 from grass import Grass
 
 boy = None
+paused_at = 0.0
 
 
 def init():
@@ -32,6 +33,10 @@ def handle_events():
                 import title_mode
                 game_framework.change_mode(title_mode)
                 return
+            if event.key == SDLK_i:
+                import item_mode
+                game_framework.push_mode(item_mode)
+                return
             if event.key == SDLK_p:
                 import pause_mode
                 game_framework.push_mode(pause_mode)
@@ -50,10 +55,14 @@ def render():
 
 
 def pause():
+    global paused_at
+    paused_at = get_time()
     if boy is not None:
         boy.pressed_keys.clear()
         boy.dir = 0
         if boy.state == 'RUN':
             boy.stop_run()
 
-def resume(): pass
+def resume():
+    if boy is not None:
+        boy.idle_started_at += get_time() - paused_at
