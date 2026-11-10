@@ -7,6 +7,9 @@ FLIGHT_SPEED_PPS = FLIGHT_SPEED_KMPH * 1000.0 / 3600.0 * PIXEL_PER_METER
 FRAME_COUNT = 14
 SHEET_COLUMNS = 5
 SHEET_ROWS = 3
+# Boundaries follow transparent gaps in the supplied, unevenly spaced sheet.
+COLUMN_EDGES = (0, 184, 367, 545, 727, 918)
+ROW_EDGES = (0, 170, 345, 506)
 FLAP_CYCLES_PER_SECOND = 2.0
 FRAMES_PER_SECOND = FRAME_COUNT * FLAP_CYCLES_PER_SECOND
 DRAW_WIDTH = 92
@@ -45,10 +48,8 @@ class Bird:
     def clip_rect(self):
         # Read left-to-right, top-to-bottom; the last cell is empty.
         row, column = divmod(int(self.frame), SHEET_COLUMNS)
-        x0 = round(column * self.image.w / SHEET_COLUMNS)
-        x1 = round((column + 1) * self.image.w / SHEET_COLUMNS)
-        top = round(row * self.image.h / SHEET_ROWS)
-        bottom = round((row + 1) * self.image.h / SHEET_ROWS)
+        x0, x1 = COLUMN_EDGES[column:column + 2]
+        top, bottom = ROW_EDGES[row:row + 2]
         return x0, self.image.h - bottom, x1 - x0, bottom - top
 
     def draw(self):
