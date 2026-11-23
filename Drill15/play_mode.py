@@ -3,6 +3,7 @@ import game_world
 import game_framework
 from boy import Boy
 from grass import Grass
+from ball import Ball
 from zombie import Zombie
 
 boy = None
@@ -49,6 +50,22 @@ def finish():
 
 def update():
     game_world.update()
+    objects = game_world.world[1]
+    zombies = [obj for obj in objects if isinstance(obj, Zombie)]
+    balls = [obj for obj in objects if isinstance(obj, Ball) and not obj.stopped]
+
+    for ball in balls:
+        for zombie in zombies[:]:
+            if game_world.collide(ball, zombie):
+                game_world.remove_object(ball)
+                if zombie.take_hit():
+                    game_world.remove_object(zombie)
+                    zombies.remove(zombie)
+                break
+
+    if any(game_world.collide(boy, zombie) for zombie in zombies):
+        game_framework.quit()
+
 
 def render():
     clear_canvas()
