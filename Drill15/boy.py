@@ -182,3 +182,8 @@ class Boy:
     def draw(self):
         self.states[self.state].draw(self)
         self.font.draw(self.x - 10, self.y + 50, f'{self.ball_count:02d}', (255, 255, 0))
+
+    def get_bb(self):
+        if self.state == 'SLEEP':
+            return self.x - 40, self.y - 40, self.x + 40, self.y - 10
+        return self.x - 20, self.y - 40, self.x + 20, self.y + 40

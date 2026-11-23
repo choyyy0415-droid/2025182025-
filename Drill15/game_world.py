@@ -12,6 +12,12 @@ def remove_object(o):
             layer.remove(o)
             return
 
+def collide(a, b):
+    left_a, bottom_a, right_a, top_a = a.get_bb()
+    left_b, bottom_b, right_b, top_b = b.get_bb()
+    return (left_a <= right_b and left_b <= right_a
+            and bottom_a <= top_b and bottom_b <= top_a)
+
 def update():
     for layer in world:
         for o in layer[:]:
